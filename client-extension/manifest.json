@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Privacy Policy Notifier",
+  "version": "0.1.0",
+  "description": "Notifies users of meaningful changes in privacy policies.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "notifications", "activeTab"],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://*.google.com/*",
+    "*://*.twitter.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
+}

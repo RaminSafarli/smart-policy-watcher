@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" x-data="popupState()" x-init="init()" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Privacy Policy Notifier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' https://cdn.tailwindcss.com;"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' https://cdn.jsdelivr.net;"
+    />
+  </head>
+  <body class="bg-white text-gray-800 p-4 w-[300px] h-full">
+    <!-- First-time Setup View -->
+    <div x-show="isFirstTime" class="space-y-2">
+      <h2 class="text-lg font-bold">🛠️ Setup</h2>
+      <p class="text-sm">Which platforms should we monitor?</p>
+      <label class="block"
+        ><input type="checkbox" value="Facebook" x-model="selectedPlatforms" />
+        Facebook</label
+      >
+      <label class="block"
+        ><input type="checkbox" value="Google" x-model="selectedPlatforms" />
+        Google</label
+      >
+      <label class="block"
+        ><input type="checkbox" value="Twitter" x-model="selectedPlatforms" />
+        Twitter</label
+      >
+      <button
+        @click="saveSetup"
+        class="mt-3 bg-blue-600 text-white px-3 py-1 rounded"
+      >
+        Save
+      </button>
+    </div>
+
+    <!-- Update Found View -->
+    <div x-show="!isFirstTime && updateFound" class="space-y-2">
+      <h2 class="text-lg font-bold text-red-600">🔔 Policy Changed!</h2>
+      <p class="text-sm">
+        Facebook now shares your location data unless you opt out.
+      </p>
+      <button class="text-blue-600 underline" @click="viewFull()">
+        View Full Summary
+      </button>
+    </div>
+
+    <!-- No Update View -->
+    <div x-show="!isFirstTime && !updateFound" class="space-y-2">
+      <h2 class="text-lg font-bold text-green-600">✅ All Clear</h2>
+      <p class="text-sm">No meaningful policy changes detected.</p>
+      <p class="text-xs text-gray-500">
+        Last checked: <span x-text="lastChecked"></span>
+      </p>
+    </div>
+  </body>
+
+  <script src="./vendor/alpine.min.js" defer></script>
+  <script src="./popup.js"></script>
+</html>
