@@ -1,0 +1,75 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+ENV/
+*.pkl
+*.log
+*.sqlite3
+
+# === FastAPI / Pipenv / Poetry ===
+pip-log.txt
+*.env
+.env.*
+.coverage
+htmlcov/
+.cache/
+.pytest_cache/
+
+# === Jupyter Notebooks ===
+.ipynb_checkpoints/
+
+# === JavaScript / Browser Extension ===
+node_modules/
+dist/
+build/
+*.bundle.js
+*.map
+*.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Java (if used for scheduler or backend) ===
+*.class
+*.jar
+*.war
+*.iml
+target/
+.gradle/
+build/
+
+# === macOS / Windows / Linux OS crap ===
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# === Data ===
+data/
+*.txt
+*.json
+*.xml
+*.csv
+
+# === Browser plugin temp ===
+plugin-client/tmp/
+plugin-client/*.zip
+
+# === IDEs ===
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === Docker ===
+*.tar
+docker-compose.override.yml
+
+# === Logs ===
+*.log
+logs/
