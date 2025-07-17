@@ -2,6 +2,7 @@ import os
 from difflib import ndiff
 from app.pipeline.preprocessor import preprocess_policy_html
 from app.pipeline.aligner import compute_similarity_matrix, greedy_alignment
+from app.pipeline.llm_filter import llm_meaningful_change_detect
 
 def load_html_file(filepath: str) -> str:
     """Load raw HTML content from a file."""
@@ -40,7 +41,7 @@ if __name__ == "__main__":
 
     print(f"🔍 Loaded {len(old_sentences)} old sentences and {len(new_sentences)} new sentences.")
 
-    # ==== Step 2 ====
+    # ==== SENTENCE ALIGNMENT ====
     sim_matrix = compute_similarity_matrix(old_sentences, new_sentences)
     aligned, removed, added = greedy_alignment(old_sentences, new_sentences, sim_matrix)
 
@@ -58,3 +59,19 @@ if __name__ == "__main__":
     print("➕ Added Sentences:")
     for s in added:
         print(f"+ {s}")
+        
+    print("################# MEANINGFUL DETECTION STARTS HERE #################")
+    meaningful_changes = []
+    for old, new, score in aligned:
+        if 0.4 < score < 0.95:
+            if llm_meaningful_change_detect(old, new):
+                meaningful_changes.append((old, new, score))
+                
+    print("\n🔍 Meaningful Changes Detected:")
+    for old, new, score in meaningful_changes:
+        print("##############")
+        print(f"OLD: {old}")
+        print(f"NEW: {new}\n")
+        print(score)
+        print("##############")
+        

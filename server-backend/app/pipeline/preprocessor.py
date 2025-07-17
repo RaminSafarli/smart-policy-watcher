@@ -19,11 +19,5 @@ def normalize_sentence(sentence: str) -> str:
 def preprocess_policy_html(html: str) -> list:
     """Main preprocessing pipeline: HTML → clean, normalized sentences."""
     raw_text = extract_policy_text_trafilatura(html)
-    # print("########### RAW TEXT ###########")
-    # print(raw_text)
-    # print("########### END RAW TEXT ###########")
     sentences = segment_sentences(raw_text)
-    # print("########### SEGMENT SENTENCES ###########")
-    # print(sentences)
-    # print("########### END SEGMENT SENTENCES ###########")
     return [normalize_sentence(s) for s in sentences]
