@@ -3,6 +3,7 @@ from difflib import ndiff
 from app.pipeline.preprocessor import preprocess_policy_html
 from app.pipeline.aligner import compute_similarity_matrix, greedy_alignment
 from app.pipeline.llm_filter import llm_meaningful_change_detect
+from app.pipeline.summarizer import summarize_changes
 
 def load_html_file(filepath: str) -> str:
     """Load raw HTML content from a file."""
@@ -75,3 +76,8 @@ if __name__ == "__main__":
         print(score)
         print("##############")
         
+        
+    # ==== SUMMARIZATION STARTS ====
+    summary = summarize_changes(meaningful_changes, added, removed)
+    print("\n📄 Summary of Changes:"
+          f"\n{summary}\n")
