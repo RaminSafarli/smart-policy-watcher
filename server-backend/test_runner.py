@@ -78,4 +78,6 @@ if __name__ == "__main__":
         
         
     # ==== SUMMARIZATION STARTS ====
-    summarize_changes(meaningful_changes, added, removed)
+    summary = summarize_changes(meaningful_changes, added, removed)
+    print("\n📄 Summary of Changes:"
+          f"\n{summary}\n")
