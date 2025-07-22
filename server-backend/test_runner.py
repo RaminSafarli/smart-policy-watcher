@@ -4,6 +4,7 @@ from app.pipeline.preprocessor import preprocess_policy_html
 from app.pipeline.aligner import compute_similarity_matrix, greedy_alignment
 from app.pipeline.llm_filter import llm_meaningful_change_detect
 from app.pipeline.summarizer import summarize_changes
+from app.pipeline.test_prep import preprocess_policy_html_test
 
 def load_html_file(filepath: str) -> str:
     """Load raw HTML content from a file."""
@@ -26,8 +27,10 @@ def print_diff(old_sentences, new_sentences):
 
 if __name__ == "__main__":
     # ==== INPUT FILES ====
-    old_path = "./data/demo/2023-01.html"
-    new_path = "./data/demo/2024-01.html"
+    # old_path = "./data/demo/2023-01.html"
+    # new_path = "./data/demo/2024-01.html"
+    old_path = "./data/7-april-fb.html"
+    new_path = "./data/16-june-fb.html"
 
     if not os.path.exists(old_path) or not os.path.exists(new_path):
         print("❌ Test HTML files not found.")
@@ -37,29 +40,33 @@ if __name__ == "__main__":
     old_html = load_html_file(old_path)
     new_html = load_html_file(new_path)
 
-    old_sentences = preprocess_policy_html(old_html)
-    new_sentences = preprocess_policy_html(new_html)
+    old_sentences = preprocess_policy_html("https://web.archive.org/web/20250408181216/https://www.facebook.com/privacy/policy/")
+    new_sentences = preprocess_policy_html("https://web.archive.org/web/20250709035637/https://www.facebook.com/privacy/policy/")
 
     print(f"🔍 Loaded {len(old_sentences)} old sentences and {len(new_sentences)} new sentences.")
+    # print("🔍 Old sentences sample!!!!!!!!!!!!!!!!!")
+    # for i, s in enumerate(old_sentences):
+    #     print(f"{i+1}. {s}")
+    # print("END!!!!!!!!!!!!!!!!")
 
     # ==== SENTENCE ALIGNMENT ====
     sim_matrix = compute_similarity_matrix(old_sentences, new_sentences)
     aligned, removed, added = greedy_alignment(old_sentences, new_sentences, sim_matrix)
 
     # ==== TEST PRINT TO SEE PAIRS ====
-    print("\n🔗 Aligned Sentences:")
-    for old, new, score in aligned:
-        print(f"[{score:.2f}]")
-        print(f"OLD: {old}")
-        print(f"NEW: {new}\n")
+    # print("\n🔗 Aligned Sentences:")
+    # for old, new, score in aligned:
+    #     print(f"[{score:.2f}]")
+    #     print(f"OLD: {old}")
+    #     print(f"NEW: {new}\n")
 
-    print("❌ Removed Sentences:")
-    for s in removed:
-        print(f"- {s}")
+    # print("❌ Removed Sentences:")
+    # for s in removed:
+    #     print(f"- {s}")
 
-    print("➕ Added Sentences:")
-    for s in added:
-        print(f"+ {s}")
+    # print("➕ Added Sentences:")
+    # for s in added:
+    #     print(f"+ {s}")
         
     print("################# MEANINGFUL DETECTION STARTS HERE #################")
     meaningful_changes = []
@@ -69,12 +76,12 @@ if __name__ == "__main__":
                 meaningful_changes.append((old, new, score))
                 
     print("\n🔍 Meaningful Changes Detected:")
-    for old, new, score in meaningful_changes:
-        print("##############")
-        print(f"OLD: {old}")
-        print(f"NEW: {new}\n")
-        print(score)
-        print("##############")
+    # for old, new, score in meaningful_changes:
+    #     print("##############")
+    #     print(f"OLD: {old}")
+    #     print(f"NEW: {new}\n")
+    #     print(score)
+    #     print("##############")
         
         
     # ==== SUMMARIZATION STARTS ====
