@@ -40,8 +40,8 @@ if __name__ == "__main__":
     old_html = load_html_file(old_path)
     new_html = load_html_file(new_path)
 
-    old_sentences = preprocess_policy_html("https://web.archive.org/web/20250408181216/https://www.facebook.com/privacy/policy/")
-    new_sentences = preprocess_policy_html("https://web.archive.org/web/20250709035637/https://www.facebook.com/privacy/policy/")
+    old_sentences = preprocess_policy_html("https://web.archive.org/web/20240928153923/https://telegram.org/privacy")
+    new_sentences = preprocess_policy_html("https://web.archive.org/web/20250724132406/https://telegram.org/privacy")
 
     print(f"🔍 Loaded {len(old_sentences)} old sentences and {len(new_sentences)} new sentences.")
     # print("🔍 Old sentences sample!!!!!!!!!!!!!!!!!")
