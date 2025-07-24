@@ -1,0 +1,21 @@
+import requests
+
+BASE_URL = "https://archive.org/wayback/available"
+
+def get_wayback_snapshot_url(target_url: str) -> str:
+    """
+    Fetches the Wayback Machine snapshot URL for a given URL and date.
+    """
+    
+    params = {
+        "url": target_url,
+    }
+    
+    response = requests.get(BASE_URL, params=params)
+    data = response.json()
+    
+    snapshot = data.get('archived_snapshots', {}).get('closest')
+    if snapshot and snapshot.get('available'):
+        return snapshot['url']
+    return None
+        
