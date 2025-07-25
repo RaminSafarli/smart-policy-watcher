@@ -19,3 +19,13 @@ def get_wayback_snapshot_url(target_url: str) -> str:
         return snapshot['url']
     return None
         
+def fetch_wayback_snapshot(target_url: str) -> str:
+    """
+    Fetches the Wayback Machine snapshot URL for a given URL.
+    """
+    
+    snapshot_url = get_wayback_snapshot_url(target_url)
+    if not snapshot_url:
+        raise ValueError(f"No Wayback Machine snapshot found for {target_url}")
+    
+    return snapshot_url  
