@@ -1,13 +1,24 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import { allPlatforms } from '../constants/platforms';
 
 interface Props {
     onContinue: () => void;
 }
 
-const platforms = ["Telegram","Facebook", "Twitter", "Instagram", "LinkedIn"];
-
 const Welcome: React.FC<Props> = ({onContinue}) => {
     const [selected, setSelected] = useState<string[]>([]);
+
+    useEffect(() => {
+        const loadSelectedPlatforms = async () => {
+          chrome.storage.local.get("selectedPlatforms",result => {
+            if(Array.isArray(result.selectedPlatforms)) {
+                setSelected(result.selectedPlatforms);
+            }
+          });
+        }
+
+        loadSelectedPlatforms();
+    }, []);
 
     const togglePlatform = (p: string) => {
         setSelected(prev =>
@@ -16,7 +27,7 @@ const Welcome: React.FC<Props> = ({onContinue}) => {
     };
 
     const handleContinue = () => {
-        localStorage.setItem("selectedPlatforms", JSON.stringify(selected));
+        chrome.storage.local.set({selectedPlatforms: selected});
         onContinue();
     }
 
@@ -24,7 +35,7 @@ const Welcome: React.FC<Props> = ({onContinue}) => {
     <div>
         <h2>Welcome to Smart Policy Watcher</h2>
         <p>Select platforms to monitor:
-        {platforms.map((p)=>(
+        {allPlatforms.map((p)=>(
             <div key={p}>
           <label>
             <input type="checkbox" checked={selected.includes(p)} onChange={() => togglePlatform(p)} />

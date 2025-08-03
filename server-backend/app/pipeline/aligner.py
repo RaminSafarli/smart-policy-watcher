@@ -11,7 +11,7 @@ def compute_similarity_matrix(old_sentences, new_sentences):
      return cosine_similarity(old_embeddings, new_embeddings)
 
 
-def greedy_alignment(old_sentences, new_sentences, sim_matrix, sim_threshold=0.4):
+def greedy_alignment(old_sentences, new_sentences, sim_matrix, sim_threshold=0.6):
     """Align sentences using greedy matching strategy."""
     aligned_pairs = []
     matched_old = set()

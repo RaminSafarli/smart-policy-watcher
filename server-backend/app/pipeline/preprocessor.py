@@ -6,13 +6,13 @@ nlp = spacy.load("en_core_web_trf")
 
 def extract_policy_text_trafilatura(html_path: str) -> str:
     # URL version
-    # downloaded_html = fetch_url(html_path)
-    # result = extract(downloaded_html)
-    # Raw HTML version
-    result = extract(html_path)
-    print("Extracted text from HTML:")
-    print(result)
-    print("!!!!!!!!!!!!!!!!")
+    downloaded_html = fetch_url(html_path)
+    result = extract(downloaded_html)
+    # # Raw HTML version
+    # result = extract(html_path)
+    # print("Extracted text from HTML:")
+    # print(result)
+    # print("!!!!!!!!!!!!!!!!")
     return result
 
 def segment_sentences(text: str) -> list:

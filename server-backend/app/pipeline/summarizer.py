@@ -1,8 +1,10 @@
-import os
-from llama_cpp import Llama
+from app.pipeline.llm_instance import llm
 
-model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/llama-2-7b-chat.Q5_K_M.gguf"))
-llm = Llama(model_path=model_path, n_ctx=4096)
+# import os
+# from llama_cpp import Llama
+
+# model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/llama-2-7b-chat.Q5_K_M.gguf"))
+# llm = Llama(model_path=model_path, n_ctx=4096)
 
 def build_chunks_from_text_blocks(blocks, max_chars=12000):
     """Group text blocks into chunks without exceeding character limit."""

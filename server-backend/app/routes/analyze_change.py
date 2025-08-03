@@ -25,16 +25,19 @@ def analyze_change(req: AnalyzeChangeRequest):
             if llm_meaningful_change_detect(old, new):
                 filtered_pairs.append((old, new, score))
                 
-        # THERE SHOULD BE A CHECK FOR UNMATCHED SENTENCES (NEED TO BE OPTIMIZED)
-        added_meaningful = [s for s in unmatched_new if llm_meaningful_change_detect("", s)]
-        removed_meaningful = [s for s in unmatched_old if llm_meaningful_change_detect(s, "")]
+        print(f"Filtered pairs: {filtered_pairs}")
+                
+        # # THERE SHOULD BE A CHECK FOR UNMATCHED SENTENCES (NEED TO BE OPTIMIZED)
+        # added_meaningful = [s for s in unmatched_new if llm_meaningful_change_detect("", s)]
+        # removed_meaningful = [s for s in unmatched_old if llm_meaningful_change_detect(s, "")]
         
-        # Step 4: Summarize the meaningful changes
-        if not filtered_pairs:
-            return AnalyzeChangeResponse(is_meaningful=False, summary="No meaningful changes detected.")
+        # # Step 4: Summarize the meaningful changes
+        # if not filtered_pairs:
+        #     return AnalyzeChangeResponse(is_meaningful=False, summary="No meaningful changes detected.")
         
-        summary = summarize_changes(aligned_sentences=filtered_pairs, added_sentences=unmatched_new, removed_sentences=unmatched_old)
+        # summary = summarize_changes(aligned_sentences=filtered_pairs, added_sentences=added_meaningful, removed_sentences=removed_meaningful)
 
-        return AnalyzeChangeResponse(is_meaningful=True, summary=summary)
+        # return AnalyzeChangeResponse(is_meaningful=True, summary=summary)
+        return AnalyzeChangeResponse(is_meaningful=True, summary="Analysis completed successfully. This is a placeholder response.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
