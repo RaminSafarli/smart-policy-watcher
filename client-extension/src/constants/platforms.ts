@@ -1,1 +1,8 @@
-export const allPlatforms = ["Facebook", "Google", "TikTok", "Telegram", "Instagram"];
+export const allPlatforms = [
+  "Facebook",
+  "Google",
+  "TikTok",
+  "Telegram",
+  "Instagram",
+  "X",
+];

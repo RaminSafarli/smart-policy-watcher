@@ -3,12 +3,16 @@ from typing import Union
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import analyze_change, fetch_wayback
+from app.routes import analyze_change, fetch_wayback, fetch_html
 from app.pipeline.preprocessor import preprocess_policy_html
+
+import requests
 
 app = FastAPI()
 app.include_router(analyze_change.router)
 app.include_router(fetch_wayback.router)
+app.include_router(fetch_html.router)
+
 
 app.add_middleware(
     CORSMiddleware, 
@@ -22,19 +26,8 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/preprocess/")
-async def preprocess_html(request: Request):
-    """
-    Preprocess HTML content to extract visible text.
-    
-    Args:
-        html_content (str): The HTML content as a string.
-        
-    Returns:
-        str: The extracted visible text.
-    """
-    body = await request.json()
-    html = body.get("html", "")
-    # sentences = extract_text_from_html(html)
-    sentences = preprocess_policy_html(html)
-    return {"sentences": sentences}
+@app.get("/fb-fetch")
+def fb_fetch():
+    response = requests.get("https://www.facebook.com/privacy/policy", headers={"User-Agent": "Mozilla/5.0"})
+    response.raise_for_status()
+    return response.text

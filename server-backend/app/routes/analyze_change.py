@@ -12,8 +12,10 @@ router = APIRouter()
 def analyze_change(req: AnalyzeChangeRequest):
     try:
         # Step 1: Preprocess the HTML content to extract sentences
-        old_sentences = preprocess_policy_html(req.old_html)
-        new_sentences = preprocess_policy_html(req.new_html)
+        # old_sentences = preprocess_policy_html(req.old_html)
+        # new_sentences = preprocess_policy_html(req.new_html)
+        old_sentences = req.old_sentences
+        new_sentences = req.new_sentences
         
         # Step 2: Align sentences between old and new versions
         sim_matrix = compute_similarity_matrix(old_sentences, new_sentences)

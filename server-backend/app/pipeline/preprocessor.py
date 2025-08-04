@@ -8,14 +8,11 @@ def extract_policy_text_trafilatura(html_path: str) -> str:
     # URL version
     downloaded_html = fetch_url(html_path)
     result = extract(downloaded_html)
-    # # Raw HTML version
-    # result = extract(html_path)
-    # print("Extracted text from HTML:")
-    # print(result)
-    # print("!!!!!!!!!!!!!!!!")
+    print(result)
     return result
 
 def segment_sentences(text: str) -> list:
+    
     # print("Segmenting test sentences...")
     # print(text)
     # print("Segmented test sentences...")
