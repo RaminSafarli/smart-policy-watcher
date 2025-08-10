@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, AnyHttpUrl
 from typing import List
 
 class AnalyzeChangeRequest(BaseModel):
@@ -9,5 +9,21 @@ class AnalyzeChangeResponse(BaseModel):
     is_meaningful: bool
     summary: str
     
+    
+class FetchAndPreprocessReq(BaseModel):
+    url: AnyHttpUrl
+
+class FetchAndPreprocessRes(BaseModel):
+    requested_url: AnyHttpUrl
+    final_url: str
+    fetched_at: str
+    content_type: str
+    html_sha256: str
+    sentence_count: int
+    sentences: list[str]
+    source: str = "live"
+    truncated: bool = False
+    
+
 class FetchRequest(BaseModel):
     url: str

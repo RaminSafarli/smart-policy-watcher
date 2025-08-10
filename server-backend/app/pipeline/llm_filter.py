@@ -1,58 +1,55 @@
-from app.pipeline.llm_instance import llm
+from app.pipeline.llm_instance import llm, YESNO_GRAMMAR
+import re
+
+YES = re.compile(r'^\s*yes\s*$', re.IGNORECASE)
+NO  = re.compile(r'^\s*no\s*$', re.IGNORECASE)
+
+def _call_yes_no(prompt: str) -> str:
+    kwargs = dict(
+        max_tokens=2,
+        temperature=0.0,
+        top_p=0.9,
+        top_k=40,
+        repeat_penalty=1.18,
+        mirostat_mode=2, mirostat_tau=5.0, mirostat_eta=0.1,
+        stop=["</s>", "[/INST]", "\n"],
+    )
+    # Try grammar; fallback if unsupported
+    try:
+        if YESNO_GRAMMAR is not None:
+            out = llm(prompt, grammar=YESNO_GRAMMAR, **kwargs)
+        else:
+            out = llm(prompt, **kwargs)
+    except (TypeError, AttributeError):
+        out = llm(prompt, **kwargs)
+    return out["choices"][0]["text"].strip()
 
 def llm_meaningful_change_detect(old_sentence: str, new_sentence: str) -> bool:
+    old_sentence = (old_sentence or "")[:1000].strip()
+    new_sentence = (new_sentence or "")[:1000].strip()
+
     prompt = f"""[INST] <<SYS>>
-    You are a helpful assistant focused on analyzing changes in privacy policies. Answer with one word only.
-    <</SYS>>
-    OLD: {old_sentence}
-    NEW: {new_sentence}
+        Output ONLY one word: yes or no.
+        A meaningful change affects collection, storage, sharing, retention, security, or user rights.
+        Stylistic/grammatical edits without policy effect are not meaningful.
+        No explanations.
+        <</SYS>>
+        OLD: {old_sentence}
+        NEW: {new_sentence}
+        Meaningful change? yes or no
+        [/INST]"""
 
-    Is this a meaningful change that affects user privacy? Answer with one word: yes or no.
-    [/INST]"""  
-    
+    resp = _call_yes_no(prompt)
+    if YES.match(resp): return True
+    if NO.match(resp):  return False
 
-    output = llm(prompt, max_tokens=10)
-    response = output["choices"][0]["text"].strip().lower()
-    # print("***************LLM Analysis:")
-    # print("old: " + old_sentence)
-    # print("new: " + new_sentence)
-    # print(f"LLM Response: {response}")  # Debugging output
-    # print("***************")
-    return "yes" in response
-
-
-
-def batch_llm_meaningful_change_detect(pairs, batch_size=10):
-    all_results = []
-    
-    for i in range(0, len(pairs), batch_size):
-        batch = pairs[i:i+batch_size]
-        
-        # Shared system instruction only once
-        prompt = "[INST] <<SYS>>\nYou are an assistant helping to detect **meaningful changes** in privacy policies. A meaningful change is one that affects **user privacy, data collection, sharing, retention, or user rights**. For each pair of sentences (old vs. new), answer **only 'yes' or 'no'**: - 'Yes' if the change has **privacy implications** or alters **user control/data practices**. - 'No' if the change is **stylistic**, **grammatical**, or **does not affect user data**. \n<</SYS>>\n"
-
-        for old, new in batch:
-            prompt += f"OLD: {old}\nNEW: {new}\nIs this a meaningful change that affects user privacy? Answer yes or no.\n\n"
-        
-        prompt += "[/INST]"
-        
-        output = llm(prompt, max_tokens=10 * len(batch))
-        text = output["choices"][0]["text"].strip().lower()
-        print("@@@@@@@@@TEXT@@@@@@@@@@")
-        print(text)
-        print("@@@@@@@@@@@@@@@@@@@")
-        
-        # Split by line, filtering out garbage
-        answers = [line.strip() for line in text.splitlines() if line.strip() in ("yes", "no")]
-        print("@@@@@@@@@ANSWERS@@@@@@@@@@")
-        print(answers)
-        print("@@@@@@@@@@@@@@@@@@@")
-        results = ["yes" in a for a in answers]
-        
-        all_results.extend(results)
-    
-    print("@@@@@@@@@ALL RESULTS@@@@@@@@@@")
-    print(all_results )
-    print("@@@@@@@@@ALL RESULTS@@@@@@@@@@")
-    return all_results
+    # One ultra-strict retry
+    retry = f"""[INST] <<SYS>>Output EXACTLY one word: yes or no.<</SYS>>
+        OLD: {old_sentence}
+        NEW: {new_sentence}
+        [/INST]"""
+    resp = _call_yes_no(retry)
+    if YES.match(resp): return True
+    if NO.match(resp):  return False
+    return False
 

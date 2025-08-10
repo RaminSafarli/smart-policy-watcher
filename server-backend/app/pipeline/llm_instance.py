@@ -1,5 +1,47 @@
 from llama_cpp import Llama
 import os
 
-model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/llama-2-7b-chat.Q5_K_M.gguf"))
-llm = Llama(model_path=model_path, n_ctx=4096)
+# ---- Optional Grammar support (some builds won't have it) ----
+try:
+    from llama_cpp import Grammar
+    _HAS_GRAMMAR = True
+except Exception:
+    Grammar = None
+    _HAS_GRAMMAR = False
+
+def _compile_grammar(grammar_str: str):
+    if not _HAS_GRAMMAR:
+        return None
+    try:
+        return Grammar.from_string(grammar_str)
+    except Exception:
+        return None
+
+# ---- Shared grammar strings ----
+
+YESNO_GRAMMAR_STR = r"""
+root ::= "yes" | "no"
+"""
+
+# ---- Precompiled grammar objects (None if unsupported) ----
+YESNO_GRAMMAR = _compile_grammar(YESNO_GRAMMAR_STR)
+
+# ---- Singleton LLM instance ----
+_model = None
+
+def get_llm():
+    global _model
+    if _model is None:
+        model_path = os.path.abspath(os.path.join(
+            os.path.dirname(__file__), "../../models/llama-2-7b-chat.Q5_K_M.gguf"
+        ))
+        _model = Llama(
+            model_path=model_path,
+            n_ctx=4096,
+            n_gpu_layers=0,
+        )
+    return _model
+
+# Public handles
+llm = get_llm()
+

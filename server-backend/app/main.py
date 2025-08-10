@@ -3,7 +3,7 @@ from typing import Union
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routes import analyze_change, fetch_wayback, fetch_html
+from app.routes import analyze_change, fetch_wayback, fetch_and_preprocess
 from app.pipeline.preprocessor import preprocess_policy_html
 
 import requests
@@ -11,7 +11,7 @@ import requests
 app = FastAPI()
 app.include_router(analyze_change.router)
 app.include_router(fetch_wayback.router)
-app.include_router(fetch_html.router)
+app.include_router(fetch_and_preprocess.router)
 
 
 app.add_middleware(

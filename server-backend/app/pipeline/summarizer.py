@@ -1,11 +1,5 @@
 from app.pipeline.llm_instance import llm
 
-# import os
-# from llama_cpp import Llama
-
-# model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models/llama-2-7b-chat.Q5_K_M.gguf"))
-# llm = Llama(model_path=model_path, n_ctx=4096)
-
 def build_chunks_from_text_blocks(blocks, max_chars=12000):
     """Group text blocks into chunks without exceeding character limit."""
     current_chunk = []
@@ -42,16 +36,26 @@ def summarize_changes(aligned_sentences, added_sentences, removed_sentences) -> 
     # Group into token-safe chunks
     final_summary = []
 
-    for chunk_blocks in build_chunks_from_text_blocks(all_blocks, max_chars=12000):
-        full_prompt = "[INST] <<SYS>>\nYou are a helpful assistant. Summarize how a website’s privacy policy has changed. " \
-                      "Write in plain, user-friendly language that non-experts can understand. " \
-                      "Focus on any changes that may affect how the user’s personal information is handled, what the company can do with their data, or any rights the user may gain or lose. " \
-                      "Avoid legal or overly formal language.\n<</SYS>>\n"
+    for chunk_blocks in build_chunks_from_text_blocks(all_blocks, max_chars=7000):
+        full_prompt = (
+        "[INST] <<SYS>>\n"
+        "Summarize these privacy policy changes clearly for a non-technical audience.\n"
+        "1) At a glance: 3–6 bullet points.\n"
+        "2) Details: short grouped bullets under Collection, Sharing, Retention, Security, Rights, Other.\n"
+        "No legal jargon. Stay under 200 words.\n<</SYS>>\n"
+    )
 
         full_prompt += "\n".join(chunk_blocks)
         full_prompt += "\n\nWhat changed?\n[/INST]"
 
-        result = llm(full_prompt, max_tokens=512)
+        result = llm(full_prompt,
+        max_tokens=512,
+        temperature=0.6,
+        top_p=0.9,
+        top_k=40,
+        repeat_penalty=1.18,
+        mirostat_mode=2, mirostat_tau=5.0, mirostat_eta=0.1,
+        stop=["</s>", "[/INST]"])
         summary = result["choices"][0]["text"].strip()
         final_summary.append(summary)
 
