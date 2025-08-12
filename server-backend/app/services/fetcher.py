@@ -1,4 +1,3 @@
-# app/services/fetcher.py
 from __future__ import annotations
 import datetime, hashlib
 import httpx

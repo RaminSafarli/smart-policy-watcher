@@ -1,4 +1,3 @@
-# app/routers/fetch_and_preprocess.py
 from fastapi import APIRouter, HTTPException
 from app.models.schemas import FetchAndPreprocessReq, FetchAndPreprocessRes
 import httpx

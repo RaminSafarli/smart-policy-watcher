@@ -1,7 +1,6 @@
 from llama_cpp import Llama, LlamaGrammar
 import os
 
-# ---- Optional Grammar support (some builds won't have it) ----
 try:
     from llama_cpp import LlamaGrammar
     _HAS_GRAMMAR = True
@@ -17,8 +16,6 @@ def _compile_grammar(grammar_str: str):
     except Exception:
         return None
 
-# ---- Shared grammar strings ----
-
 YESNO_GRAMMAR_STR = r"""
 root ::= "yes" | "no"
 """
@@ -32,7 +29,7 @@ escape ::= "\\" ["\\/bfnrt] | "\\u" hex hex hex hex
 hex ::= [0-9a-fA-F]
 ws ::= [ \t\n\r]*
 '''
-# ---- Precompiled grammar objects (None if unsupported) ----
+
 YESNO_GRAMMAR = _compile_grammar(YESNO_GRAMMAR_STR)
 SUMMARY_GRAMMAR = _compile_grammar(SUMMARY_GRAMMAR_STR)
 
@@ -53,6 +50,5 @@ def get_llm():
         )
     return _model
 
-# Public handles
 llm = get_llm()
 

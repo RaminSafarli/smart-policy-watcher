@@ -13,8 +13,6 @@ def _call_yes_no(prompt: str) -> str:
         repeat_penalty=1.18,
         stop=["</s>", "[/INST]", "\n"],
     )
-    # Try grammar; fallback if unsupported
-    # 1️⃣ Check grammar loaded
     assert YESNO_GRAMMAR is not None, "YESNO_GRAMMAR is None — not being applied!"
     try:
         if YESNO_GRAMMAR is not None:
@@ -45,13 +43,5 @@ def llm_meaningful_change_detect(old_sentence: str, new_sentence: str) -> bool:
     if YES.match(resp): return True
     if NO.match(resp):  return False
 
-    # # One ultra-strict retry
-    # retry = f"""[INST] <<SYS>>Output EXACTLY one word: yes or no.<</SYS>>
-    #     OLD: {old_sentence}
-    #     NEW: {new_sentence}
-    #     [/INST]"""
-    # resp = _call_yes_no(retry)
-    # if YES.match(resp): return True
-    # if NO.match(resp):  return False
     return False
 
