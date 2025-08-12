@@ -1,13 +1,28 @@
 from pydantic import BaseModel, AnyHttpUrl
-from typing import List
+from typing import List, Dict
+
+from pydantic import BaseModel
+
+class Summary(BaseModel):
+    short_summary: str
+    detailed_summary: str
+
+class AnalyzeChangeResponse(BaseModel):
+    is_meaningful: bool
+    summary: Summary
+
 
 class AnalyzeChangeRequest(BaseModel):
     old_sentences: List[str]
     new_sentences: List[str]
+
+# class AnalyzeChangeRequest(BaseModel):
+#     old_sentences: List[str]
+#     new_sentences: List[str]
     
-class AnalyzeChangeResponse(BaseModel):
-    is_meaningful: bool
-    summary: str
+# class AnalyzeChangeResponse(BaseModel):
+#     is_meaningful: bool
+#     summary: str
     
     
 class FetchAndPreprocessReq(BaseModel):

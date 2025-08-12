@@ -11,12 +11,14 @@ def _call_yes_no(prompt: str) -> str:
         top_p=0.9,
         top_k=40,
         repeat_penalty=1.18,
-        mirostat_mode=2, mirostat_tau=5.0, mirostat_eta=0.1,
         stop=["</s>", "[/INST]", "\n"],
     )
     # Try grammar; fallback if unsupported
+    # 1️⃣ Check grammar loaded
+    assert YESNO_GRAMMAR is not None, "YESNO_GRAMMAR is None — not being applied!"
     try:
         if YESNO_GRAMMAR is not None:
+            print("YESNO_GRAMMAR WORKED LLM FILTER")
             out = llm(prompt, grammar=YESNO_GRAMMAR, **kwargs)
         else:
             out = llm(prompt, **kwargs)
@@ -43,13 +45,13 @@ def llm_meaningful_change_detect(old_sentence: str, new_sentence: str) -> bool:
     if YES.match(resp): return True
     if NO.match(resp):  return False
 
-    # One ultra-strict retry
-    retry = f"""[INST] <<SYS>>Output EXACTLY one word: yes or no.<</SYS>>
-        OLD: {old_sentence}
-        NEW: {new_sentence}
-        [/INST]"""
-    resp = _call_yes_no(retry)
-    if YES.match(resp): return True
-    if NO.match(resp):  return False
+    # # One ultra-strict retry
+    # retry = f"""[INST] <<SYS>>Output EXACTLY one word: yes or no.<</SYS>>
+    #     OLD: {old_sentence}
+    #     NEW: {new_sentence}
+    #     [/INST]"""
+    # resp = _call_yes_no(retry)
+    # if YES.match(resp): return True
+    # if NO.match(resp):  return False
     return False
 

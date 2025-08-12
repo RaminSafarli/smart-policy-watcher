@@ -1,19 +1,19 @@
-from llama_cpp import Llama
+from llama_cpp import Llama, LlamaGrammar
 import os
 
 # ---- Optional Grammar support (some builds won't have it) ----
 try:
-    from llama_cpp import Grammar
+    from llama_cpp import LlamaGrammar
     _HAS_GRAMMAR = True
 except Exception:
-    Grammar = None
+    LlamaGrammar = None
     _HAS_GRAMMAR = False
 
 def _compile_grammar(grammar_str: str):
     if not _HAS_GRAMMAR:
         return None
     try:
-        return Grammar.from_string(grammar_str)
+        return LlamaGrammar.from_string(grammar_str)
     except Exception:
         return None
 
@@ -22,9 +22,20 @@ def _compile_grammar(grammar_str: str):
 YESNO_GRAMMAR_STR = r"""
 root ::= "yes" | "no"
 """
-
+SUMMARY_GRAMMAR_STR = r'''
+root ::= object
+object ::= "{" ws "\"short_summary\"" ws ":" ws string ws "," ws "\"detailed_summary\"" ws ":" ws string ws "}"
+string ::= "\"" chars "\""
+chars ::= char*
+char ::= [^"\\] | escape
+escape ::= "\\" ["\\/bfnrt] | "\\u" hex hex hex hex
+hex ::= [0-9a-fA-F]
+ws ::= [ \t\n\r]*
+'''
 # ---- Precompiled grammar objects (None if unsupported) ----
 YESNO_GRAMMAR = _compile_grammar(YESNO_GRAMMAR_STR)
+SUMMARY_GRAMMAR = _compile_grammar(SUMMARY_GRAMMAR_STR)
+
 
 # ---- Singleton LLM instance ----
 _model = None
