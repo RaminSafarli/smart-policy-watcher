@@ -3,5 +3,5 @@ export const platformUrls: { [key: string]: string } = {
     "https://web.archive.org/web/20240928153923/https://telegram.org/privacy",
   TikTok: "https://www.tiktok.com/legal/page/us/privacy-policy/en",
   X: "https://x.com/en/privacy",
-  // other
+  Linkedin: "https://www.linkedin.com/legal/privacy-policy",
 };
