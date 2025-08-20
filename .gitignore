@@ -51,7 +51,6 @@ $RECYCLE.BIN/
 
 # === Data ===
 data/
-*.txt
 *.json
 *.xml
 *.csv
